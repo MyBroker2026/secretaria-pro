@@ -20,20 +20,34 @@ const C = {
 const SUPABASE_URL = "https://bhnegpnpupbxdjpveefu.supabase.co/rest/v1/"; 
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJobmVncG5wdXBieGRqcHZlZWZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyNjgxNzEsImV4cCI6MjA5Nzg0NDE3MX0.tt-ppOU5azA9SbTrKOoYRLKVzHuNkYJcvhTW0jxMpWg"; 
 
-
-async function sb(path, opts = {}) {
+async function sb(table, opts = {}) {
   if (!SUPABASE_URL || !SUPABASE_KEY) return null;
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
-    headers: {
-      "apikey": SUPABASE_KEY,
-      "Authorization": `Bearer ${SUPABASE_KEY}`,
-      "Content-Type": "application/json",
-      "Prefer": opts.method === "POST" ? "return=representation" : "return=minimal",
-    },
-    ...opts,
-  });
-  if (!res.ok) { console.error("Supabase error", res.status, await res.text()); return null; }
-  return res.json().catch(() => null);
+  // Separar tabela dos query params
+  const [tbl, qs] = table.split("?");
+  const cleanUrl = SUPABASE_URL.replace(/\/+$/, "");
+  const base = `${cleanUrl}/rest/v1/${tbl}`;
+  const url = qs ? `${base}?${qs}` : base;
+  const headers = {
+    "apikey": SUPABASE_KEY,
+    "Authorization": `Bearer ${SUPABASE_KEY}`,
+    "Content-Type": "application/json",
+  };
+  if (opts.method === "POST") headers["Prefer"] = "return=representation";
+  if (opts.method === "PATCH") headers["Prefer"] = "return=representation";
+  try {
+    const res = await fetch(url, { ...opts, headers });
+    if (!res.ok) {
+      const txt = await res.text();
+      console.error("Supabase error", res.status, txt);
+      return null;
+    }
+    const ct = res.headers.get("content-type") || "";
+    if (ct.includes("application/json")) return res.json();
+    return null;
+  } catch (e) {
+    console.error("Supabase fetch error:", e);
+    return null;
+  }
 }
 
 // ─── NAV ────────────────────────────────────────────────────────────────
