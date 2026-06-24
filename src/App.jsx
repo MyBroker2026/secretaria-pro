@@ -17,7 +17,7 @@ const C = {
 };
 
 // ─── SUPABASE CONFIG ──────────────────────────────────────────────────────
-const SUPABASE_URL = "https://bhnegpnpupbxdjpveefu.supabase.co/rest/v1/"; 
+const SUPABASE_URL = "https://bhnegpnpupbxdjpveefu.supabase.co"; 
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJobmVncG5wdXBieGRqcHZlZWZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyNjgxNzEsImV4cCI6MjA5Nzg0NDE3MX0.tt-ppOU5azA9SbTrKOoYRLKVzHuNkYJcvhTW0jxMpWg"; 
 
 async function sb(table, opts = {}) {
