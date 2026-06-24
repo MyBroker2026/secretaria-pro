@@ -17,10 +17,9 @@ const C = {
 };
 
 // ─── SUPABASE CONFIG ──────────────────────────────────────────────────────
-// 
-// Dashboard → Settings → API
 const SUPABASE_URL = "https://bhnegpnpupbxdjpveefu.supabase.co/rest/v1/"; 
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJobmVncG5wdXBieGRqcHZlZWZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyNjgxNzEsImV4cCI6MjA5Nzg0NDE3MX0.tt-ppOU5azA9SbTrKOoYRLKVzHuNkYJcvhTW0jxMpWg"; 
+
 
 async function sb(path, opts = {}) {
   if (!SUPABASE_URL || !SUPABASE_KEY) return null;
@@ -340,11 +339,11 @@ export default function App() {
     }
     setDbConnected(true);
     const [c, a, t, ag, fin] = await Promise.all([
-      sb("clientes?order=nome.asc&select=*"),
-      sb("apolices?order=created_at.desc&select=*"),
-      sb("tarefas?order=created_at.desc&select=*"),
-      sb("agenda?order=data.asc,horario.asc&select=*"),
-      sb("financeiro?order=mes.asc&select=*"),
+      sb("clientes?select=*&order=nome.asc"),
+      sb("apolices?select=*&order=created_at.desc"),
+      sb("tarefas?select=*&order=created_at.desc"),
+      sb("agenda?select=*&order=data.asc,horario.asc"),
+      sb("financeiro?select=*&order=mes.asc"),
     ]);
     if (c) setClientes(c);
     if (a) setApolices(a);
@@ -484,7 +483,7 @@ export default function App() {
     storageSet("ia-memoria", JSON.stringify(iaMemoria));
   }, [iaMemoria]);
 
-// icaro esteve aqui
+
 
   const excluirConversa = (id) => {
     setIaConversas(prev => {
